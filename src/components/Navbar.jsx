@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Menu, X, LogOut, User, Sprout } from 'lucide-react'
+import { Menu, X, LogOut, User, ShieldCheck } from 'lucide-react'
 
-const Navbar = ({ isAuthenticated, onLogout }) => {
+const Navbar = ({ isAuthenticated, currentUser, onLogout }) => {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileOpen, setIsMobileOpen] = useState(false)
   const [activeNav, setActiveNav] = useState('home')
@@ -21,6 +21,8 @@ const Navbar = ({ isAuthenticated, onLogout }) => {
   useEffect(() => {
     if (location.pathname === '/marketplace') {
       setActiveNav('marketplace')
+    } else if (location.pathname === '/officer-dashboard') {
+      setActiveNav('officer-dashboard')
     } else if (location.pathname === '/') {
       const handleScrollActive = () => {
         const howItWorks = document.getElementById('how-it-works')
@@ -53,12 +55,19 @@ const Navbar = ({ isAuthenticated, onLogout }) => {
     }
   }
 
-  // Marketplace nav link is ONLY included when user (Farmer) is logged in!
+  // Dynamic nav links based on recognized role
+  const isOfficer = currentUser?.role === 'Market Officer'
+
   const navLinks = [
     { id: 'home', label: 'Home', path: '/', type: 'link' },
     { id: 'how-it-works', label: 'How It Works', sectionId: 'how-it-works', type: 'scroll' },
     { id: 'price-transparency', label: 'Price Transparency', sectionId: 'price-transparency', type: 'scroll' },
-    ...(isAuthenticated ? [{ id: 'marketplace', label: 'Marketplace', path: '/marketplace', type: 'link' }] : []),
+    ...(isAuthenticated
+      ? isOfficer
+        ? [{ id: 'officer-dashboard', label: 'Officer Dashboard', path: '/officer-dashboard', type: 'link' }]
+        : [{ id: 'marketplace', label: 'Farmer Marketplace', path: '/marketplace', type: 'link' }]
+      : []
+    ),
   ]
 
   return (
@@ -136,15 +145,18 @@ const Navbar = ({ isAuthenticated, onLogout }) => {
             <div className="hidden md:flex items-center gap-3">
               {isAuthenticated ? (
                 <div className="flex items-center gap-3">
-                  <div className="flex items-center gap-2 text-sm text-olive-400">
-                    <div className="w-8 h-8 rounded-full bg-sage-200 flex items-center justify-center">
-                      <User size={16} className="text-olive-400" />
+                  <div className="flex items-center gap-2 text-sm text-olive-400 bg-sage-200/40 px-3 py-1.5 rounded-full border border-sage-200">
+                    <div className="w-6 h-6 rounded-full bg-rust-400 text-white flex items-center justify-center text-xs">
+                      {isOfficer ? <ShieldCheck size={14} /> : <User size={14} />}
                     </div>
-                    <span className="font-medium">Farmer</span>
+                    <span className="font-semibold">{currentUser?.name || (isOfficer ? 'Tariq Mahmood' : 'Ahmed Khan')}</span>
+                    <span className="text-[11px] bg-white px-2 py-0.5 rounded text-rust-400 font-medium">
+                      {currentUser?.role || 'Farmer'}
+                    </span>
                   </div>
                   <button
                     onClick={() => { onLogout(); navigate('/'); setActiveNav('home'); }}
-                    className="text-sm text-rust-400 hover:text-rust-500 transition-colors flex items-center gap-1"
+                    className="text-sm text-rust-400 hover:text-rust-500 transition-colors flex items-center gap-1 font-medium"
                   >
                     <LogOut size={16} />
                     Logout
@@ -155,7 +167,7 @@ const Navbar = ({ isAuthenticated, onLogout }) => {
                   to="/login"
                   className="fairfarm-btn-primary text-sm !px-5 !py-2.5"
                 >
-                  Farmer Sign In
+                  Sign In (Demo Roles)
                 </Link>
               )}
             </div>
@@ -255,8 +267,8 @@ const Navbar = ({ isAuthenticated, onLogout }) => {
                         <User size={18} className="text-olive-400" />
                       </div>
                       <div>
-                        <p className="font-medium text-olive-400">Farmer</p>
-                        <p className="text-xs text-neutral-300">Verified Account</p>
+                        <p className="font-medium text-olive-400">{currentUser?.name || 'Ahmed Khan'}</p>
+                        <p className="text-xs text-rust-400 font-medium">{currentUser?.role || 'Farmer'}</p>
                       </div>
                     </div>
                     <button
@@ -272,7 +284,7 @@ const Navbar = ({ isAuthenticated, onLogout }) => {
                     onClick={() => setIsMobileOpen(false)}
                     className="block w-full fairfarm-btn-primary text-center text-sm"
                   >
-                    Farmer Sign In / Register
+                    Sign In (Demo Roles)
                   </Link>
                 )}
               </div>

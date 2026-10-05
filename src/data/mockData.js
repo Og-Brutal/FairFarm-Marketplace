@@ -1,3 +1,96 @@
+export const demoUsers = [
+  {
+    id: 'u1',
+    email: 'farmer@fairfarm.pk',
+    password: 'password123',
+    name: 'Ahmed Khan',
+    role: 'Farmer',
+    district: 'Faisalabad',
+    verificationStatus: 'VERIFIED',
+    cnic: '35202-1234567-1',
+    phone: '0300-1234567',
+    avatar: '👨‍🌾'
+  },
+  {
+    id: 'u2',
+    email: 'officer@fairfarm.pk',
+    password: 'password123',
+    name: 'Tariq Mahmood',
+    role: 'Market Officer',
+    district: 'Faisalabad Market Board',
+    verificationStatus: 'VERIFIED',
+    cnic: '35201-5554321-9',
+    phone: '0321-9988776',
+    avatar: '🛡️'
+  },
+  {
+    id: 'u3',
+    email: 'rashid@fairfarm.pk',
+    password: 'password123',
+    name: 'Mohammad Rashid',
+    role: 'Farmer',
+    district: 'Multan',
+    verificationStatus: 'PENDING_VERIFICATION',
+    cnic: '35201-9876543-5',
+    phone: '0301-9876543',
+    avatar: '🌾'
+  }
+]
+
+export const pendingFarmersData = [
+  {
+    id: 'f_101',
+    name: 'Mohammad Rashid',
+    email: 'rashid@fairfarm.pk',
+    phone: '0301-9876543',
+    cnic: '35201-9876543-5',
+    district: 'Multan',
+    landRecordNo: 'FARD-2026-8891',
+    submittedDate: '2026-10-04',
+    status: 'PENDING_VERIFICATION'
+  },
+  {
+    id: 'f_102',
+    name: 'Sultan Ali',
+    email: 'sultan@fairfarm.pk',
+    phone: '0303-1122334',
+    cnic: '35203-1122334-7',
+    district: 'Gujranwala',
+    landRecordNo: 'FARD-2026-9902',
+    submittedDate: '2026-10-05',
+    status: 'PENDING_VERIFICATION'
+  },
+  {
+    id: 'f_103',
+    name: 'Ghulam Nabi',
+    email: 'ghulam@fairfarm.pk',
+    phone: '0305-6677889',
+    cnic: '35204-6677889-3',
+    district: 'Sahiwal',
+    landRecordNo: 'FARD-2026-7734',
+    submittedDate: '2026-10-03',
+    status: 'PENDING_VERIFICATION'
+  }
+]
+
+export const maskCNIC = (cnic) => {
+  if (!cnic) return ''
+  const parts = cnic.split('-')
+  if (parts.length === 3) {
+    return `${parts[0]}-*******-${parts[2]}`
+  }
+  return cnic.slice(0, 5) + '*******' + cnic.slice(-2)
+}
+
+export const maskPhone = (phone) => {
+  if (!phone) return ''
+  const parts = phone.split('-')
+  if (parts.length === 2) {
+    return `${parts[0]}-***-${parts[1].slice(-4)}`
+  }
+  return phone.slice(0, 4) + '***' + phone.slice(-4)
+}
+
 export const cropListings = [
   {
     id: 1,
