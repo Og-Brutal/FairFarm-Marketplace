@@ -62,10 +62,14 @@ const Navbar = ({ isAuthenticated, currentUser, onLogout }) => {
     { id: 'home', label: 'Home', path: '/', type: 'link' },
     { id: 'how-it-works', label: 'How It Works', sectionId: 'how-it-works', type: 'scroll' },
     { id: 'price-transparency', label: 'Price Transparency', sectionId: 'price-transparency', type: 'scroll' },
+    { id: 'browse-listings', label: 'Browse Listings', path: '/browse-listings', type: 'link' },
     ...(isAuthenticated
       ? isOfficer
         ? [{ id: 'officer-dashboard', label: 'Officer Dashboard', path: '/officer-dashboard', type: 'link' }]
-        : [{ id: 'marketplace', label: 'Farmer Marketplace', path: '/marketplace', type: 'link' }]
+        : [
+            { id: 'marketplace', label: 'Farmer Marketplace', path: '/marketplace', type: 'link' },
+            { id: 'submit-listing', label: 'Submit Listing', path: '/submit-listing', type: 'link' },
+          ]
       : []
     ),
   ]

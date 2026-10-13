@@ -8,6 +8,8 @@ import Home from './pages/Home'
 import Login from './pages/Login'
 import FarmerMarketplace from './pages/FarmerMarketplace'
 import OfficerDashboard from './pages/OfficerDashboard'
+import SubmitListing from './pages/SubmitListing'
+import BrowseListings from './pages/BrowseListings'
 import { demoUsers } from './data/mockData'
 
 function App() {
@@ -77,6 +79,26 @@ function App() {
                 ) : (
                   <Navigate to="/login" replace />
                 )
+              }
+            />
+
+            {/* MODULE 1: SUBMIT CROP LISTING (Activity 3) */}
+            <Route
+              path="/submit-listing"
+              element={
+                isAuthenticated ? (
+                  <SubmitListing currentUser={currentUser} />
+                ) : (
+                  <Navigate to="/login" replace />
+                )
+              }
+            />
+
+            {/* MODULE 2: BROWSE & SEARCH LISTINGS (Activity 3) */}
+            <Route
+              path="/browse-listings"
+              element={
+                <BrowseListings currentUser={currentUser} />
               }
             />
           </Routes>

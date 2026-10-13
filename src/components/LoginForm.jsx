@@ -1,8 +1,9 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Eye, EyeOff, Mail, Lock, Check, AlertCircle, Loader2, User, Phone, MapPin, Upload, ShieldAlert, Sprout, ShieldCheck } from 'lucide-react'
+import { Eye, EyeOff, Mail, Lock, Check, AlertCircle, Loader2, User, Phone, MapPin, ShieldAlert, Sprout, ShieldCheck } from 'lucide-react'
 import { districts, demoUsers } from '../data/mockData'
+import { login as apiLogin } from '../services/api'
 
 const LoginForm = ({ onLogin }) => {
   const navigate = useNavigate()
@@ -86,40 +87,51 @@ const LoginForm = ({ onLogin }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    
+
     let loggedInUser = selectedUser
 
     if (mode === 'login') {
       if (!validateLoginForm()) return
-      const matched = demoUsers.find(u => u.email.toLowerCase() === loginData.email.toLowerCase())
-      if (matched) {
-        loggedInUser = matched
-      } else {
-        loggedInUser = {
+
+      setIsLoading(true)
+      try {
+        // Try real backend first
+        const result = await apiLogin(loginData.email, loginData.password)
+        loggedInUser = result.user
+      } catch {
+        // Fallback: match from local mock data
+        const matched = demoUsers.find(
+          (u) => u.email.toLowerCase() === loginData.email.toLowerCase()
+        )
+        loggedInUser = matched || {
           id: 'u_custom',
           name: loginData.email.split('@')[0],
           email: loginData.email,
           role: 'Farmer',
           district: 'Faisalabad',
-          verificationStatus: 'VERIFIED'
+          verificationStatus: 'VERIFIED',
+          avatar: '👤',
         }
       }
     } else {
       if (!validateRegisterForm()) return
+      setIsLoading(true)
+      // Registration creates a pending user locally (backend register not in scope)
+      await new Promise((r) => setTimeout(r, 1000))
       loggedInUser = {
         id: 'u_new_' + Date.now(),
         name: regData.fullName,
         email: regData.phone + '@fairfarm.pk',
         role: 'Farmer',
         district: regData.district,
-        verificationStatus: 'PENDING_VERIFICATION'
+        verificationStatus: 'PENDING_VERIFICATION',
+        avatar: '🌾',
       }
     }
 
-    setIsLoading(true)
-    await new Promise(resolve => setTimeout(resolve, 1200))
     setIsLoading(false)
     setIsSuccess(true)
+    setSelectedUser(loggedInUser)
 
     setTimeout(() => {
       onLogin(loggedInUser)
